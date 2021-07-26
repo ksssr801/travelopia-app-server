@@ -4,4 +4,4 @@ env
 __pycache__
 *.sqlite3
 logs/
-*000
+00*.py
