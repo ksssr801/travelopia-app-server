@@ -37,13 +37,14 @@ class TravelAppViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], name="booking_details", url_path='booking-details')
     def get_booking_details(self, request):
         try:
-            all_booking_details = BookingDetails.objects.all()
+            print ("request : ", request.GET)
+            all_booking_details = BookingDetails.objects.filter(is_deleted=False)
             serialized_data = BookingDetailsSerializers(all_booking_details, many=True).data
             print ("serialized_data : ", serialized_data)
             return Response(serialized_data, status=status.HTTP_200_OK)
         except Exception as err:
             print ("Error in fetching the booking details. - %s - %s" % (type(err), err))
-            return Response(serialized_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"status": "error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['get'], name="option_config", url_path='option-config')
     def get_init_option_config(self, request):
