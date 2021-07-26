@@ -38,9 +38,10 @@ class TravelAppViewSet(viewsets.ModelViewSet):
     def get_booking_details(self, request):
         try:
             print ("request : ", request.GET)
-            all_booking_details = BookingDetails.objects.filter(is_deleted=False)
+            all_booking_details = BookingDetails.objects.filter(is_deleted=False).order_by('-creation_time')
             serialized_data = BookingDetailsSerializers(all_booking_details, many=True).data
-            print ("serialized_data : ", serialized_data)
+            destination_id_val_map = {ob.get('id', ''): ob.get('name', '') for ob in DESTINATION_LIST}
+            for data in serialized_data: data.update({'destination': destination_id_val_map.get(data.get('destination', None)), 'readable_creation_time': time.ctime(data.get('creation_time'))})
             return Response(serialized_data, status=status.HTTP_200_OK)
         except Exception as err:
             print ("Error in fetching the booking details. - %s - %s" % (type(err), err))
