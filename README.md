@@ -2,16 +2,18 @@
 
 > Sys Specs: OS need to be Linux or MAC with Python3 installed.
 
-> Steps to Run the app:
+> Steps to run the app:
 
  1. Download zip file.
  2. After unzipping, go to travelopia-app-server-main folder.
  3. Execute these commands to install:
+
     ```
     chmod +x install_dep.sh
     ./install_dep.sh
     ```
  4. Execute command to run the server:
+ 
     ```
     ./run_travelopia_server.sh
     ```
