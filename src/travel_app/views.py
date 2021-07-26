@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .serializers import BookingDetailsSerializers
 from .models import BookingDetails
-from .utils.utility import *
 from .utils.default_config import *
 import time
 
@@ -48,4 +47,15 @@ class TravelAppViewSet(viewsets.ModelViewSet):
         except Exception as err:
             print ("Error in fetching the booking details.")
             return Response(serialized_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+    @action(detail=False, methods=['get'], name="option_config", url_path='option-config')
+    def get_init_option_config(self, request):
+        try:
+            default_option = {}
+            default_option.update({
+                'destination_list': DESTINATION_LIST,
+            })
+            return Response(default_option, status=status.HTTP_200_OK)
+        except Exception as err:
+            print ("Error in fetching the default options.")
+            return Response({'status': 'error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
