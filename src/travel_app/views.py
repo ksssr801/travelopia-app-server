@@ -14,26 +14,27 @@ class TravelAppViewSet(viewsets.ModelViewSet):
         return BookingDetails.objects.all()
 
     @action(detail=False, methods=['post'], name="do_booking", url_path='do-booking')
-    def get_booking_info(self, request):
+    def save_booking_info(self, request):
         try:
             print ("request : ", request.data)
             data_obj = request.data
             booking_details_obj = BookingDetails()
-            booking_details_obj.booking_id = get_ID()
             booking_details_obj.traveller = data_obj.get("traveller", '')
-            booking_details_obj.email_id = data_obj.get("email_id", '')
-            booking_details_obj.destination = data_obj.get("destination", None)
-            booking_details_obj.total_travellers = data_obj.get("total_travellers", None)
-            booking_details_obj.budget_per_person = data_obj.get("budget_per_person", None)
+            booking_details_obj.email_id = data_obj.get("email", '')
+            booking_details_obj.destination = int(data_obj.get("destination", ''))
+            booking_details_obj.total_travellers = int(data_obj.get("travellersCount", ''))
+            booking_details_obj.budget_per_person = int(data_obj.get("budget", ''))
             booking_details_obj.creation_time = int(time.time())
             booking_details_obj.last_update_time = int(time.time())
             try:
                 booking_details_obj.save()
+                data = BookingDetailsSerializers([booking_details_obj], many=True).data
             except Exception as err:
-                print ("Failed to save the booking details.")
-            return Response({}, status=status.HTTP_200_OK)
+                print ("Failed to save the booking details - %s - %s" % (type(err), err))
+                return Response({"status": "failed"}, status=status.HTTP_501_NOT_IMPLEMENTED)
+            return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
-            print ("Error in saving the booking details.")
+            print ("Error in saving the booking details - %s - %s" % (type(err), err))
             return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['get'], name="booking_details", url_path='booking-details')
@@ -45,5 +46,6 @@ class TravelAppViewSet(viewsets.ModelViewSet):
             print ("serialized_data : ", serialized_data)
             return Response(serialized_data, status=status.HTTP_200_OK)
         except Exception as err:
+            print ("Error in fetching the booking details.")
             return Response(serialized_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     

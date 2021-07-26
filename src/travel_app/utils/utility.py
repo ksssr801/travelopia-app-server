@@ -10,7 +10,9 @@ import os
 
 def get_ID():
     try:
-        return uuid.uuid1().int >> 64
+        ID = str(uuid.uuid1().int >> 64)
+        print (ID, type(ID), '<<<<< ID')
+        return ID
     except Exception as err:
         pass
 
